@@ -25,7 +25,7 @@ jobs:
     - name: Login en Amazon ECR (runner)
       uses: aws-actions/amazon-ecr-login@v1
 
-    - - name: Build imagen DB y push a ECR
+    - name: Build imagen DB y push a ECR
       env:
         ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
         ECR_REPO_URL_DB: ${{ secrets.ECR_REPO_URL_DB }}
@@ -36,6 +36,7 @@ jobs:
         docker build -t tienda-db .
         docker tag tienda-db:latest $ECR_REPO_URL_DB:latest
         docker push $ECR_REPO_URL_DB:latest
+
 
     - name: Desplegar Backend vía SSM
       run: |
