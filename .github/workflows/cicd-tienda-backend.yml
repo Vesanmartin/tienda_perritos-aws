@@ -25,12 +25,17 @@ jobs:
     - name: Login en Amazon ECR (runner)
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Build imagen Backend y push a ECR
+    - - name: Build imagen DB y push a ECR
+      env:
+        ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+        ECR_REPO_URL_DB: ${{ secrets.ECR_REPO_URL_DB }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
       run: |
-        cd backend
-        docker build -t tienda-backend .
-        docker tag tienda-backend:latest ${{ secrets.ECR_REPO_URL_BACKEND }}:latest
-        docker push ${{ secrets.ECR_REPO_URL_BACKEND }}:latest
+        cd db
+        aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+        docker build -t tienda-db .
+        docker tag tienda-db:latest $ECR_REPO_URL_DB:latest
+        docker push $ECR_REPO_URL_DB:latest
 
     - name: Desplegar Backend vía SSM
       run: |
