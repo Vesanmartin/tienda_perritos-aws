@@ -26,11 +26,16 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
 
     - name: Build imagen DB y push a ECR
+      env:
+        ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+        ECR_REPO_URL_DB: ${{ secrets.ECR_REPO_URL_DB }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
       run: |
         cd db
+        aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
         docker build -t tienda-db .
-        docker tag tienda-db:latest ${{ secrets.ECR_REPO_URL_DB }}:latest
-        docker push ${{ secrets.ECR_REPO_URL_DB }}:latest
+        docker tag tienda-db:latest $ECR_REPO_URL_DB:latest
+        docker push $ECR_REPO_URL_DB:latest
 
     - name: Desplegar DB vía SSM
       run: |
