@@ -25,6 +25,13 @@ jobs:
     - name: Login en Amazon ECR (runner)
       uses: aws-actions/amazon-ecr-login@v1
 
+    - name: Login en Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.verosanmartin }}
+        password: ${{ secrets.Nenas.2120}}
+
+
     - name: Build imagen DB y push a ECR
       env:
         ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
